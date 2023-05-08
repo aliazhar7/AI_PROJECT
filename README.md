@@ -325,7 +325,7 @@ model.compile(loss=categorical_crossentropy, optimizer=Adam(learning_rate), metr
 model.summary()
 }
 ```
-###Output:
+### Output:
 ![Screenshot 2023-05-08 125728](https://user-images.githubusercontent.com/132945205/236921344-3443e89b-cb59-4c96-99d9-20edb0343950.jpg)
 ### Training Model
 ```python
@@ -361,6 +361,84 @@ plt.show()
 ### Output: 
 ![Screenshot 2023-05-08 052046](https://user-images.githubusercontent.com/132945205/236921696-96d6194c-954c-4344-80f5-984181a3cd2f.jpg)
 
+## Image Prediction
+```python
+# Predict the labels for the test data
+Y_pred = np.round(model.predict(X_test))
 
+# Set the random seed for reproducibility
+np.random.seed(87)
+
+# Display a random sample of 5 test images along with their predicted labels
+for rand_num in np.random.randint(0, len(Y_test), 5):
+  # Create a new figure for each image
+  plt.figure()
+  
+  # Display the image
+  plt.imshow(X_test[rand_num].reshape(100, 100))
+  
+  # Turn off the axis
+  plt.axis('off')
+  
+  # Check if the predicted label matches the true label
+  if np.where(Y_pred[rand_num] == 1)[0].sum() == np.where(Y_test[rand_num] == 1)[0].sum():
+    # If the predicted label does not match the true label, set the title as the predicted label in red color
+    plt.title(encoder.classes_[np.where(Y_pred[rand_num] == 1)[0].sum()], color='r')
+  else:
+    # If the predicted label matches the true label, set the title as the predicted label in green color
+    plt.title(encoder.classes_[np.where(Y_pred[rand_num] == 1)[0].sum()], color='g')
+}
+```
+### Output:
+
+## Predicting Similar Images
+```python
+def find_similar_images(image_url, no_of_images):
+
+  # Preprocess the query image
+  X_query = image_processing(image_url)
+  X_query = X_query/255
+  X_query = X_query.reshape(1, 100, 100, 1)
+
+  # Make a prediction on the query image
+  Y_query = np.round(model.predict(X_query))
+
+  # Get the predicted dress category index
+  i = np.where(Y_query == 1)[0][1]
+
+  # Print the detected dress category
+  print('Type detected by model:', encoder.classes_[i].upper())
+
+  # Filter the dataset to retrieve similar images of the detected dress category
+  data_req = data.loc[data['category'] == encoder.classes_[i]]
+  data_req = data_req.reset_index(drop=True)
+
+  # Check if the number of requested images is more than the available similar images in the dataset
+  if no_of_images > len(data_req):
+    return print('number of images needed is more than similar images in the dataset')
+
+  # Plot the query image
+  plt.figure()
+  show_image_from_url(image_url)
+  plt.title('Query Image')
+
+  # Plot the similar images
+  c = 1
+  np.random.seed(13)
+  for j in np.random.randint(0, len(data_req), no_of_images):
+    #plt.figure()
+    url = data_req['image_url'].iloc[j]
+    show_image_from_url(url)
+    plt.title('Similar Image {}'.format(c))
+    c += 1
+}
+```
+### Output:
+
+
+## Testing
+To run tests, run the following command:
+```bash
+  find_similar_images('https://i.dailymail.co.uk/1s/2018/11/06/23/5855600-6360713-Ashley_James_stuns_in_emerald_green_animal_print_dress_at_glitzy-a-123_1541546195058.jpg', 2)
 
 
