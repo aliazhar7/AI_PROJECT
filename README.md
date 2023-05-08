@@ -440,5 +440,11 @@ def find_similar_images(image_url, no_of_images):
 To run tests, run the following command:
 ```bash
   find_similar_images('https://i.dailymail.co.uk/1s/2018/11/06/23/5855600-6360713-Ashley_James_stuns_in_emerald_green_animal_print_dress_at_glitzy-a-123_1541546195058.jpg', 2)
+### Output:
+![Screenshot 2023-05-08 125728](https://user-images.githubusercontent.com/132945205/236925582-abf1d1be-5479-45c7-b482-c2800e09b987.jpg)
+### Similar Images: 
+![Screenshot 2023-05-08 131732](https://user-images.githubusercontent.com/132945205/236925653-d0cacc8d-09a3-4b3a-8c05-d705cc27bda2.jpg)
+![Screenshot 2023-05-08 131713](https://user-images.githubusercontent.com/132945205/236925660-ca89f4e0-dd3f-4799-bbc3-b2132c1194b4.jpg)
+
 
 
