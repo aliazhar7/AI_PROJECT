@@ -2,7 +2,7 @@
 
 Introducing the AI Fashion Designer project, a groundbreaking innovation poised to revolutionize the way we explore and discover fashion. Harnessing the power of cutting-edge technology, this project employs a Convolutional Neural Network (CNN) as its core engine, meticulously trained on a rich dataset teeming with diverse and captivating clothing designs. Its primary objective is to provide personalized recommendations by generating visually similar images to those already possessed by an individual. By leveraging the impressive capabilities of this AI-powered fashion guru, users can delve into an unparalleled realm of sartorial exploration, discovering new styles, and expanding their fashion horizons. Seamlessly bridging the gap between creativity and technology, the AI Fashion Designer project transcends traditional fashion paradigms, making it a compelling and indispensable tool for fashion enthusiasts, professionals, and those seeking to infuse their wardrobes with fresh inspiration. Get ready to unlock a world of style possibilities with this remarkable foray into the future of fashion design.
 
-## Authors
+## Author
 - ALI AZHAR
 
 ## Features
@@ -440,6 +440,8 @@ def find_similar_images(image_url, no_of_images):
 To run tests, run the following command:
 ```bash
   find_similar_images('https://i.dailymail.co.uk/1s/2018/11/06/23/5855600-6360713-Ashley_James_stuns_in_emerald_green_animal_print_dress_at_glitzy-a-123_1541546195058.jpg', 2)
+}
+```
 ### Output:
 ![Screenshot 2023-05-08 125728](https://user-images.githubusercontent.com/132945205/236925582-abf1d1be-5479-45c7-b482-c2800e09b987.jpg)
 ### Similar Images: 
