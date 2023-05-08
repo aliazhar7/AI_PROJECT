@@ -90,6 +90,7 @@ def show_image_from_url(image_url):
 show_image_from_url(data['image_url'].loc[666])
 }
 ```
+### Output:
 ![Screenshot 2023-05-08 053612](https://user-images.githubusercontent.com/132945205/236916058-04113d23-05b0-4d6f-b112-efacc1d03c99.jpg)
 
 ## Data Pre-processing
@@ -108,19 +109,22 @@ plt.title('Frequency of Unique Categories')
 plt.show()
 }
 ```
+### Output:
 ![Screenshot 2023-05-08 053348](https://user-images.githubusercontent.com/132945205/236916789-bbfb7bd5-211c-4fa5-ba2c-c083912d18b6.jpg)
 ### Statistics of Quantitative Data
 ```python
 data.describe()
 }
 ```
+### Output:
 ![Screenshot 2023-05-08 123810](https://user-images.githubusercontent.com/132945205/236917138-bf47dee7-0c87-4fb8-8211-49ea3ef2f17c.jpg)
-### REMOVING OTHER VARIABLE
+### Removing Other Variable
 ```python
 data = data.loc[(data['category'] != 'OTHER')].reset_index(drop=True)
 data['category'].value_counts()
 }
 ```
+### Output:
 ![Screenshot 2023-05-08 123907](https://user-images.githubusercontent.com/132945205/236917283-1d67f3a5-2843-4e3e-9537-429e518ce4aa.jpg)
 ### Selecting Categories with 100 Percent Accuracy
 ```python
@@ -128,6 +132,7 @@ data=data[data['category:confidence']==1]
 data['category'].value_counts()
 }
 ```
+### Output:
 ![Screenshot 2023-05-08 124040](https://user-images.githubusercontent.com/132945205/236917621-15e25d7d-603a-46e8-8639-248c0846fe9a.jpg)
 ### Selecting Data
 Data is selected in this section
@@ -163,6 +168,63 @@ data
 }
 ```
 
+## Image Pre-processing
+```python
+def image_processing(image_url):
+
+    # Download from image URL and import it as a NumPy array
+    response = urllib.request.urlopen(image_url)
+    image = np.asarray(bytearray(response.read()), dtype="uint8")                         
+
+    # Read the NumPy array as a color image in OpenCV
+    image_bgr = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+    # Convert the image to HSV color space for creating a mask
+    image_hsv = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2HSV)
+
+    # Convert the image to grayscale that will be used for training
+    image_gray = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY)
+
+    # Create a mask that detects the red rectangular tags present in each image
+    mask = cv2.inRange(image_hsv, (0,255,255), (0,255,255))
+
+    # Get the coordinates of the red rectangle in the image,
+    # but take the entire image if the mask fails to detect the red rectangle
+    if len(np.where(mask != 0)[0]) != 0:
+        y1 = min(np.where(mask != 0)[0])
+        y2 = max(np.where(mask != 0)[0])
+    else:
+        y1 = 0                                     
+        y2 = len(mask)
+    
+    if len(np.where(mask != 0)[1]) != 0:
+        x1 = min(np.where(mask != 0)[1])
+        x2 = max(np.where(mask != 0)[1])
+    else:
+        x1 = 0
+        x2 = len(mask[0])
+
+    # Crop the grayscale image along those coordinates
+    image_cropped = image_gray[y1:y2, x1:x2]
+
+    # Resize the image to 100x100 pixels size
+    image_100x100 = cv2.resize(image_cropped, (100, 100))
+
+    # Save the image as an array of size 10000x1
+    image_arr = image_100x100.flatten()
+    return image_arr
+}
+```
+```python
+np.random.seed(17)
+#displaying 5 images after preprocessing
+for i in np.random.randint(0, len(X), 5):
+  plt.figure()
+  plt.imshow(X[i].reshape(100, 100)), plt.axis('off')
+}
+```
+Output:
+![Screenshot 2023-05-08 124741](https://user-images.githubusercontent.com/132945205/236919384-739b2c22-7fdb-465a-b2b1-45d0f4d09589.jpg)
 
 
 
