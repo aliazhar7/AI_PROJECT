@@ -53,8 +53,9 @@ pip install gdown
 ```
 
 ## Data
-### Data Source:
-Kaggle
+### Data Source 🔗 Link:
+Kaggle, https://www.kaggle.com/datasets/zalando-research/fashionmnist
+[![kaggle](https://www.kaggle.com/datasets/zalando-research/fashionmnist)](https://www.kaggle.com/)
 ### Creating a DataFrame
 ```python
 data=pd.read_csv("dress.csv",error_bad_lines=False, engine="python")
