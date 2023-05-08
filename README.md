@@ -58,6 +58,7 @@ data=pd.read_csv("dress.csv",error_bad_lines=False, engine="python")
 data
 }
 ```
+### Output:
 ![Screenshot 2023-05-08 103959](https://user-images.githubusercontent.com/132945205/236915632-5df2ab26-5158-44ee-baf9-1be4106e5ca3.jpg)
 
 ## URL to Image Function
@@ -90,6 +91,77 @@ show_image_from_url(data['image_url'].loc[666])
 }
 ```
 ![Screenshot 2023-05-08 053612](https://user-images.githubusercontent.com/132945205/236916058-04113d23-05b0-4d6f-b112-efacc1d03c99.jpg)
+
+## Data Pre-processing
+### Unique Value Count in 'category' Column
+```python
+# Assuming your dataframe is called 'data' and the column you want to plot is called 'category'
+column_data = data['category']
+category_counts = column_data.value_counts()
+
+# Plotting the frequency graph
+plt.figure(figsize=(6, 4))
+category_counts.plot(kind='bar')
+plt.xlabel('Categories')
+plt.ylabel('Count')
+plt.title('Frequency of Unique Categories')
+plt.show()
+}
+```
+![Screenshot 2023-05-08 053348](https://user-images.githubusercontent.com/132945205/236916789-bbfb7bd5-211c-4fa5-ba2c-c083912d18b6.jpg)
+### Statistics of Quantitative Data
+```python
+data.describe()
+}
+```
+![Screenshot 2023-05-08 123810](https://user-images.githubusercontent.com/132945205/236917138-bf47dee7-0c87-4fb8-8211-49ea3ef2f17c.jpg)
+### REMOVING OTHER VARIABLE
+```python
+data = data.loc[(data['category'] != 'OTHER')].reset_index(drop=True)
+data['category'].value_counts()
+}
+```
+![Screenshot 2023-05-08 123907](https://user-images.githubusercontent.com/132945205/236917283-1d67f3a5-2843-4e3e-9537-429e518ce4aa.jpg)
+### Selecting Categories with 100 Percent Accuracy
+```python
+data=data[data['category:confidence']==1]
+data['category'].value_counts()
+}
+```
+![Screenshot 2023-05-08 124040](https://user-images.githubusercontent.com/132945205/236917621-15e25d7d-603a-46e8-8639-248c0846fe9a.jpg)
+### Selecting Data
+Data is selected in this section
+```python
+# Group the rows by category and limit the count of each group to 100
+data = data.groupby('category').apply(lambda x: x.head(100))
+
+# Reset the index of the resulting DataFrame and drop the old index
+data = data.reset_index(drop=True)
+
+# Print the counts of the unique values in the 'category' column
+data['category'].value_counts()
+}
+```
+```python
+# Count the number of occurrences of each category
+category_counts = data['category'].value_counts()
+
+# Create a mask for rows with a category count of less than 10
+mask = data['category'].isin(category_counts[category_counts >= 10].index)
+
+# Filter the DataFrame using the mask
+data = data[mask]
+data['category'].value_counts()
+}
+```
+### Shuffling + Dropping Columns
+```python
+data=data.sample(frac=1,random_state=42) # shuffling
+data=data.reset_index()
+data.drop(columns=['index'	,'_unit_id', 'category:confidence'],inplace=True)
+data
+}
+```
 
 
 
