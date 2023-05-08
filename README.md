@@ -223,8 +223,143 @@ for i in np.random.randint(0, len(X), 5):
   plt.imshow(X[i].reshape(100, 100)), plt.axis('off')
 }
 ```
-Output:
+### Output:
 ![Screenshot 2023-05-08 124741](https://user-images.githubusercontent.com/132945205/236919384-739b2c22-7fdb-465a-b2b1-45d0f4d09589.jpg)
+
+## Formatting Data for Model
+#### Encoding
+```python
+#Fetch the categories column from the dataframe, and tranform into to numerical labels
+encoder = preprocessing.LabelEncoder()
+Targets = encoder.fit_transform(data['category'])
+Targets
+}
+```
+```python
+#One-hot encoding of the Target vector
+n_classes=16
+Y = to_categorical(Targets, num_classes = n_classes)
+}
+```
+### Splitting Data
+```python
+#Segregation of a test set for testing on the trained model
+X_test = X[400:,]
+Y_test = Y[400:,]
+#Seperation of a validation set from the remaing training set (required for validation while training)
+X_train, X_val, Y_train, Y_val = train_test_split(X[:400,], Y[:400,], test_size=0.10, random_state=13)
+}
+```
+### 3 Dimensional
+```python
+#Reshape the input matrices such that each sample is three-dimensional
+img_rows, img_cols = 100, 100
+input_shape = (img_rows, img_cols, 1)
+
+X_train = X_train.reshape(X_train.shape[0], img_rows, img_cols, 1)
+X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
+X_val = X_val.reshape(X_val.shape[0], img_rows, img_cols, 1)
+}
+```
+
+## Model
+### CNN Model
+```python
+# Create an instance of the Sequential model
+model = Sequential()
+
+# Add a 2D convolutional layer with 16 filters, a 3x3 kernel, and 'relu' activation
+# Set the input shape to the specified 'input_shape'
+model.add(Conv2D(filters=16, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
+
+# Add a BatchNormalization layer to normalize the activations of the previous layer
+model.add(BatchNormalization())
+
+# Add another 2D convolutional layer with 16 filters, a 3x3 kernel, and 'relu' activation
+model.add(Conv2D(filters=16, kernel_size=(3, 3), activation='relu'))
+
+# Add another BatchNormalization layer
+model.add(BatchNormalization())
+
+# Add a MaxPooling layer with a stride of (2, 2) to downsample the spatial dimensions
+model.add(MaxPool2D(strides=(2, 2)))
+
+# Add a Dropout layer to randomly set a fraction (0.25) of the input units to 0 at each update during training
+model.add(Dropout(0.25))
+
+# Add another set of convolutional, normalization, pooling, and dropout layers similar to the previous ones
+model.add(Conv2D(filters=32, kernel_size=(3, 3), activation='relu'))
+model.add(BatchNormalization())
+model.add(Conv2D(filters=32, kernel_size=(3, 3), activation='relu'))
+model.add(BatchNormalization())
+model.add(MaxPool2D(strides=(2, 2)))
+model.add(Dropout(0.25))
+
+# Flatten the output from the previous layers to a 1D vector
+model.add(Flatten())
+
+# Add a fully connected Dense layer with 512 units and 'relu' activation
+model.add(Dense(512, activation='relu'))
+
+# Add a Dropout layer
+model.add(Dropout(0.25))
+
+# Add another fully connected Dense layer with 1024 units and 'relu' activation
+model.add(Dense(1024, activation='relu'))
+
+# Add a Dropout layer
+model.add(Dropout(0.4))
+
+# Add the final output layer with 'n_classes' units and 'softmax' activation
+model.add(Dense(n_classes, activation='softmax'))
+
+# Set the learning rate for the Adam optimizer
+learning_rate = 0.001
+
+# Compile the model by specifying the loss function, optimizer, and metrics to evaluate during training
+model.compile(loss=categorical_crossentropy, optimizer=Adam(learning_rate), metrics=['accuracy'])
+}
+```
+```python
+# Summary
+model.summary()
+}
+```
+###Output:
+![Screenshot 2023-05-08 125728](https://user-images.githubusercontent.com/132945205/236921344-3443e89b-cb59-4c96-99d9-20edb0343950.jpg)
+### Training Model
+```python
+# Define the checkpoint to save the best model
+save_at = "/content/model.hdf5"
+save_best = ModelCheckpoint(save_at, monitor='val_accuracy', verbose=0, save_best_only=True, save_weights_only=False, mode='max')
+}
+```
+```python
+# Training the CNN
+history = model.fit( X_train, Y_train, epochs = 10, batch_size = 20,  callbacks=[save_best], verbose=1, validation_data = (X_val, Y_val))
+# Plot the training history (Training accuracy & Validation accuracy)
+}
+```
+### Training and Validation Accuracy
+```python
+# Access the accuracy values from the history object
+training_accuracy = history.history['accuracy']
+validation_accuracy = history.history['val_accuracy']
+
+# Plot the training and validation accuracy
+epochs = range(1, len(training_accuracy) + 1)
+
+plt.plot(epochs, training_accuracy, 'b', label='Training Accuracy')
+plt.plot(epochs, validation_accuracy, 'r', label='Validation Accuracy')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()
+}
+```
+### Output: 
+![Screenshot 2023-05-08 052046](https://user-images.githubusercontent.com/132945205/236921696-96d6194c-954c-4344-80f5-984181a3cd2f.jpg)
 
 
 
