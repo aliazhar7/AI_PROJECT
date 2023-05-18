@@ -173,6 +173,22 @@ data
 ```
 
 ## Image Pre-processing
+
+### My CNN model can only work with numbers. What I have are Image URLs and their categorical labels. I will deal with the labels later. Now I need to convert the images into something the CNN can work with.
+
+### As I have seen earlier, the images are colored. An image is just a matrix of pixels. Every pixel in a colored image consists of three-dimensional information (amount of red, green, and blue respectively). The pixels of grayscale (black and white) images, however, only need one-dimensional data. It varies from 0 to 255. The lower corresponds to absolute white and the upper end corresponds to absolute black. Everything in between can represent any shade of grayscale possible.
+
+### I will use urllib to download the images from the URLs and use numpy to convert the images into nice clean ndarrays. I will use OpenCV to read those ndarrays in color form (The order in OpenCV is Blue-Green-Red). I will convert it to another format 'HSV' where I can create a mask that will detect those red rectangles.
+
+### Using OpenCV, I can either read the ndarray directly in grayscale format or convert the BGR format to grayscale.
+
+### Then I will fetch the pixel coordinates of the corners of the detected rectangles and using them crop the grayscale versions. I also need uniformity in my data. The original images have different shapes. So, I will reshape every cropped grayscale image into 100x100 pixels.
+
+### Every OpenCV image is stored as array data. So all these ndarrays can be flattened into a single-dimensional array of length 10000x1 (I can reshape arrays into any desirable dimensions as long as the total number of elements in the original array and the transformed array remain the same.
+
+### Note that reshaping images on OpenCV though is different since there is no loss of information. I can compromise with the image resolution there.
+
+### Also note that I am only using OpenCV to read and edit images. I will use Pyplot to view the images, and that requires RGB (Red-Green-Blue) format. I can use OpenCV to convert from BGR to RGB.
 ```python
 def image_processing(image_url):
 
